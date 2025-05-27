@@ -25,7 +25,8 @@ def run(args):
         'ggh_htautau_2HDM',
         'VBFHH',
         'ggFHH',
-        'tx'
+        'tx',
+        'QCD'
     ]
     available_eras = ["2022EE"]
     ## "boostedtt_s" means finding <=1 boostedTau but >=2 SubJets

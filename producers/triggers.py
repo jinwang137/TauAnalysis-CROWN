@@ -257,3 +257,20 @@ MTGenerateCrossTriggerFlagsEmbedding = ExtendedVectorProducer(
     scope=["mt"],
     vec_config="mutau_cross_trigger_embedding",
 )
+
+HLTTriggerFlags_forfullyboosted = ExtendedVectorProducer(
+    name="HLTTriggerFlags_forfullyboosted",
+    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    input=[
+        q.fatjet_p4_0,
+        nanoAOD.TriggerObject_bit,
+        nanoAOD.TriggerObject_id,
+        nanoAOD.TriggerObject_pt,
+        nanoAOD.TriggerObject_eta,
+        nanoAOD.TriggerObject_phi,
+    ],
+    output="flagname",
+    #output=[q.triggersss],
+    scope=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+    vec_config="HLTFatJet_trigger",
+)

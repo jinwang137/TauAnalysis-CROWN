@@ -399,3 +399,23 @@ dR_Fatjet = Quantity("dR_Fatjet")
 dphi_Fatjet = Quantity("dphi_Fatjet")
 
 MatchedSubinfo = Quantity("MatuchedSubinfo")
+
+fatjet_pt_tt = Quantity("fatjet_pt_tt")
+fatjet_eta_tt = Quantity("fatjet_eta_tt")
+fatjet_phi_tt = Quantity("fatjet_phi_tt")
+fatjet_mass_tt = Quantity("fatjet_mass_tt")
+fatjet_pt_bb = Quantity("fatjet_pt_bb")
+fatjet_eta_bb = Quantity("fatjet_eta_bb")
+fatjet_phi_bb = Quantity("fatjet_phi_bb")
+fatjet_mass_bb = Quantity("fatjet_mass_bb")
+
+tau_pt_0 = Quantity("tau_pt_0")
+tau_eta_0 = Quantity("tau_eta_0")
+tau_phi_0 = Quantity("tau_phi_0")
+tau_mass_0 = Quantity("tau_mass_0")
+tau_pt_1 = Quantity("tau_pt_1")
+tau_eta_1 = Quantity("tau_eta_1")
+tau_phi_1 = Quantity("tau_phi_1")
+tau_mass_1 = Quantity("tau_mass_1")
+
+triggersss = Quantity("triggersss")

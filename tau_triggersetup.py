@@ -3,6 +3,64 @@ from code_generation.modifiers import EraModifier, SampleModifier
 
 
 def add_diTauTriggerSetup(configuration: Configuration):
+    ##Boosted bbtt trigger
+    configuration.add_config_parameters(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        {
+            "HLTFatJet_trigger": EraModifier(
+                {   ##  0 => TrkIsoVVL, 1 => Iso, 2 => OverlapFilter PFTau, 3 => 1mu, 4 => 2mu, 5 => 1mu-1e, 6 => 1mu-1tau, 7 => 3mu, 8 => 2mu-1e, 9 => 1mu-2e, 10 => 1mu (Mu50), 11 => 1mu (Mu100), 12 => 1mu-1photon for Muon;
+                    "2022EE": [
+                        {
+                            "flagname": "trg_HLT_AK8PFHT800_TrimMass50",
+                            "hlt_path": "HLT_AK8PFHT800_TrimMass50",
+                            "ptcut": 200,
+                            "etacut": 2.5,
+                            "filterbit": -1,  #??
+                            "trigger_particle_id": 3,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_AK8PFJet400_TrimMass30",
+                            "hlt_path": "HLT_AK8PFJet400_TrimMass30",
+                            "ptcut": 450,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 6,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_AK8PFJet500",
+                            "hlt_path": "HLT_AK8PFJet500",
+                            "ptcut": 550,
+                            "etacut": 2.5,
+                            "filterbit": -1, #??
+                            "trigger_particle_id": 6,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_PFJet500",
+                            "hlt_path": "HLT_PFJet500",
+                            "ptcut": 550,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 1,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                        {
+                            "flagname": "trg_HLT_PFHT1050",
+                            "hlt_path": "HLT_PFHT1050",
+                            "ptcut": 100,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 3,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                    ],
+                }
+            ),
+        },
+    )
+    
     ## MT, MM scope trigger setup
     configuration.add_config_parameters(
         ["mt", "mm", "em"],

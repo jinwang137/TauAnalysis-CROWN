@@ -12,6 +12,10 @@ from .producers import electrons_boostedbbtt as electrons_boostedbbtt
 from .producers import muons_boostedbbtt as muons_boostedbbtt
 from .producers import boostedtau_boostedbbtt as boostedtau_boostedbbtt
 from .producers import subjet_boostedbbtt as subjet_boostedbbtt
+from .producers import p4 as p4
+from .producers import triggers as triggers
+
+##from .tau_triggersetup import add_diTauTriggerSetup
 
 from .producers import pairquantities as pairquantities
 from .producers import pairselection as pairselection
@@ -19,9 +23,9 @@ from .producers import scalefactors as scalefactors
 from .quantities import nanoAOD as nanoAOD
 from .quantities import output as q
 from code_generation.configuration import Configuration
-from code_generation.modifiers import EraModifier
-from code_generation.rules import RemoveProducer
-from code_generation.systematics import SystematicShift
+from code_generation.modifiers import EraModifier, SampleModifier
+from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
+from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
 
 def build_config(
@@ -174,6 +178,63 @@ def build_config(
         }
     )
 
+    configuration.add_config_parameters(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        {
+            "HLTFatJet_trigger": EraModifier(
+                {   ##  0 => TrkIsoVVL, 1 => Iso, 2 => OverlapFilter PFTau, 3 => 1mu, 4 => 2mu, 5 => 1mu-1e, 6 => 1mu-1tau, 7 => 3mu, 8 => 2mu-1e, 9 => 1mu-2e, 10 => 1mu (Mu50), 11 => 1mu (Mu100), 12 => 1mu-1photon for Muon;
+                    "2022EE": [
+                        {
+                            "flagname": "trg_HLT_AK8PFHT800_TrimMass50",
+                            "hlt_path": "HLT_AK8PFHT800_TrimMass50",
+                            "ptcut": 200,
+                            "etacut": 2.5,
+                            "filterbit": -1,  #??
+                            "trigger_particle_id": 3,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_AK8PFJet400_TrimMass30",
+                            "hlt_path": "HLT_AK8PFJet400_TrimMass30",
+                            "ptcut": 450,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 6,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_AK8PFJet500",
+                            "hlt_path": "HLT_AK8PFJet500",
+                            "ptcut": 550,
+                            "etacut": 2.5,
+                            "filterbit": -1, #??
+                            "trigger_particle_id": 6,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_PFJet500",
+                            "hlt_path": "HLT_PFJet500",
+                            "ptcut": 550,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 1,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                        {
+                            "flagname": "trg_HLT_PFHT1050",
+                            "hlt_path": "HLT_PFHT1050",
+                            "ptcut": 100,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 3,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                    ]
+                }
+            )
+        },
+    )
+
 
     configuration.add_producers(
         ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
@@ -193,6 +254,7 @@ def build_config(
         ]
     )
 
+
     configuration.add_producers(
         ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
         [
@@ -201,6 +263,16 @@ def build_config(
 
             FatJets.LVFatJet0,
             FatJets.LVFatJet1,
+
+            p4.tt_fatjet_pt,
+            p4.tt_fatjet_eta,
+            p4.tt_fatjet_phi,
+            p4.tt_fatjet_mass,
+            p4.bb_fatjet_pt,
+            p4.bb_fatjet_eta,
+            p4.bb_fatjet_phi,
+            p4.bb_fatjet_mass,
+
             FatJets.FatJetSFMass0,
             FatJets.FatJetSFMass1,
             FatJets.FatJetMass0,
@@ -222,8 +294,21 @@ def build_config(
 
             FatJets.FatJetdR,
             FatJets.FatJetdphi,
+            #triggers.HLTTriggerFlags_forfullyboosted,
+        ]
+    )
+
+    configuration.add_producers(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        [
+            triggers.HLTTriggerFlags_forfullyboosted,
+        ]
+    )##woeking 5261219
 
 
+    configuration.add_producers(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        [
             boostedtau_boostedbbtt.TauFatJetdR,
             boostedtau_boostedbbtt.BaseBoostedTaus,
             boostedtau_boostedbbtt.NumberOfBoostTaus,
@@ -238,8 +323,6 @@ def build_config(
             subjet_boostedbbtt.SubJet1_ifcannotfoundbydR,
             
         ]
-        
-
     )
 
 
@@ -312,6 +395,20 @@ def build_config(
         
     )
 
+    configuration.add_producers(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        [
+            p4.BoostedTau_0_pt,
+            p4.BoostedTau_0_eta,
+            p4.BoostedTau_0_phi,
+            p4.BoostedTau_0_mass,
+            p4.BoostedTau_1_pt,
+            p4.BoostedTau_1_eta,
+            p4.BoostedTau_1_phi,
+            p4.BoostedTau_1_mass,
+        ]
+    )
+
     configuration.add_outputs(
         "global",
         [
@@ -323,7 +420,7 @@ def build_config(
             q.is_diboson,
             nanoAOD.run,
             q.lumi,
-            nanoAOD.genWeight,
+            #nanoAOD.genWeight,
             nanoAOD.event,
             q.puweight,
             nanoAOD.FatJet_pt,
@@ -417,6 +514,26 @@ def build_config(
             q.tautau_MAss_CA,
 
             q.MatchedSubinfo,
+
+            q.fatjet_pt_tt,
+            q.fatjet_eta_tt,
+            q.fatjet_phi_tt,
+            q.fatjet_mass_tt,
+            q.fatjet_pt_bb,
+            q.fatjet_eta_bb,
+            q.fatjet_phi_bb,
+            q.fatjet_mass_bb,
+
+            q.tau_pt_0,
+            q.tau_eta_0,
+            q.tau_phi_0,
+            q.tau_mass_0,
+            q.tau_pt_1,
+            q.tau_eta_1,
+            q.tau_phi_1,
+            q.tau_mass_1,
+            triggers.HLTTriggerFlags_forfullyboosted.output_group,
+            
         ],
     )
 
