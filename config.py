@@ -14,6 +14,7 @@ from .producers import boostedtau_boostedbbtt as boostedtau_boostedbbtt
 from .producers import subjet_boostedbbtt as subjet_boostedbbtt
 from .producers import p4 as p4
 from .producers import triggers as triggers
+from .producers import jets as jets
 
 ##from .tau_triggersetup import add_diTauTriggerSetup
 
@@ -72,22 +73,116 @@ def build_config(
                 }
             ),
             "met_filters": [
+                        # "Flag_goodVertices",
+                        # "Flag_globalSuperTightHalo2016Filter",
+                        # "Flag_HBHENoiseFilter",
+                        # "Flag_HBHENoiseIsoFilter",
+                        # "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        # "Flag_BadPFMuonFilter",
+                        # #"Flag_BadPFMuonDzFilter",  # only since nanoAODv9 available
+                        # "Flag_eeBadScFilter",
+                        # ## new filters for 2022/23
+                        # "Flag_BadPFMuonDzFilter",
+                        # "Flag_hfNoisyHitsFilter",
+                        # "Flag_ecalBadCalibFilter",
+
                         "Flag_goodVertices",
                         "Flag_globalSuperTightHalo2016Filter",
-                        "Flag_HBHENoiseFilter",
-                        "Flag_HBHENoiseIsoFilter",
+                        # "Flag_HBHENoiseFilter",
+                        # "Flag_HBHENoiseIsoFilter", # HBHE and HBHEiso noise filters are no longer needed.
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
                         "Flag_BadPFMuonFilter",
-                        #"Flag_BadPFMuonDzFilter",  # only since nanoAODv9 available
-                        "Flag_eeBadScFilter",
-                        ## new filters for 2022/23
-                        "Flag_BadPFMuonDzFilter",
+                        "Flag_BadPFMuonDzFilter", # only since nanoAODv9 available
                         "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
 
                     ], 
         },
     )
+
+    configuration.add_config_parameters(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        {
+            "min_jet_pt": 30,
+            "max_jet_eta": 4.7,
+            "jet_id": 2,  # default: 2==pass tight ID and fail tightLepVeto
+            "jet_puid": EraModifier(
+                {
+                    "2016preVFP": 1,  # 0==fail, 1==pass(loose), 3==pass(loose,medium), 7==pass(loose,medium,tight)
+                    "2016postVFP": 1,  # 0==fail, 1==pass(loose), 3==pass(loose,medium), 7==pass(loose,medium,tight)
+                    "2017": 4,  # 0==fail, 4==pass(loose), 6==pass(loose,medium), 7==pass(loose,medium,tight)
+                    "2018": 4,  # 0==fail, 4==pass(loose), 6==pass(loose,medium), 7==pass(loose,medium,tight)
+                    "2022EE": 4, ## no need to do PU ID for puppi jets
+                    "2022postEE": 4, 
+                    "2023": 4, 
+                    "2023BPix": 4, 
+                }
+            ),
+            "jet_puid_max_pt": 50,  # recommended to apply puID only for jets below 50 GeV
+            "jet_reapplyJES": False,
+            "jet_jes_sources": '{""}',
+            "jet_jes_shift": 0,
+            "jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "jet_jec_file": EraModifier(
+                {
+                    "2016preVFP": '"data/jsonpog-integration/POG/JME/2016preVFP_UL/jet_jerc.json.gz"',
+                    "2016postVFP": '"data/jsonpog-integration/POG/JME/2016postVFP_UL/jet_jerc.json.gz"',
+                    "2017": '"data/jsonpog-integration/POG/JME/2017_UL/jet_jerc.json.gz"',
+                    "2018": '"data/jsonpog-integration/POG/JME/2018_UL/jet_jerc.json.gz"',
+                    "2022EE": '"data/jsonpog-integration/POG/JME/2022_Summer22/jet_jerc.json.gz"', ## source: https://gitlab.cern.ch/zhiyuanl/jsonpog-integration/-/tree/master/POG/JME?ref_type=heads
+                    "2022postEE": '"data/jsonpog-integration/POG/JME/2022_Summer22EE/jet_jerc.json.gz"', 
+                    "2023": '"data/jsonpog-integration/POG/JME/2023_Summer23/jet_jerc.json.gz"', 
+                    "2023BPix": '"data/jsonpog-integration/POG/JME/2023_Summer23BPix/jet_jerc.json.gz"', 
+                }
+            ),
+            "jet_veto_map": EraModifier(
+                {
+                    "2022EE": '"data/jsonpog-integration/POG/JME/2022_Summer22/jetvetomaps.json.gz"', 
+                    "2022postEE": '"data/jsonpog-integration/POG/JME/2022_Summer22EE/jetvetomaps.json.gz"', 
+                    "2023": '"data/jsonpog-integration/POG/JME/2023_Summer23/jetvetomaps.json.gz"', 
+                    "2023BPix": '"data/jsonpog-integration/POG/JME/2023_Summer23BPix/jetvetomaps.json.gz"',
+                }
+            ),
+            "jet_veto_tag": EraModifier(
+                {   "2022EE": '"Summer22_23Sep2023_RunCD_V1"',
+                    "2022postEE": '"Summer22EE_23Sep2023_RunEFG_V1"',
+                    "2023": '"Summer23Prompt23_RunC_V1"', 
+                    "2023BPix": '"Summer23BPixPrompt23_RunD_V1"', 
+                    }
+            ),
+            "jet_jer_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
+                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
+                    "2017": '"Summer19UL17_JRV2_MC"',
+                    "2018": '"Summer19UL18_JRV2_MC"',
+                    "2022EE": '"Summer22_22Sep2023_JRV1_MC"',
+                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
+                    "2023": '"Summer23Prompt23_RunCv123_JRV1_MC"', 
+                    "2023BPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"', 
+
+                }
+            ),
+            "jet_jes_tag_data": '""',
+            "jet_jes_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
+                    "2016postVFP": '"Summer19UL16_V7_MC"',
+                    "2017": '"Summer19UL17_V5_MC"',
+                    "2018": '"Summer19UL18_V5_MC"',
+                    "2022EE": '"Summer22_22Sep2023_V2_MC"',
+                    "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
+                    "2023": '"Summer23Prompt23_V1_MC"', 
+                    "2023BPix": '"Summer23BPixPrompt23_V1_MC"', 
+
+
+                }
+            ),
+            "jet_jec_algo": '"AK4PFPuppi"',
+        },
+    )
+
     # FatJet base selection:
     configuration.add_config_parameters(
         ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
@@ -229,6 +324,78 @@ def build_config(
                             "trigger_particle_id": 3,
                             "max_deltaR_triggermatch": 0.4,
                         },
+                        {
+                            "flagname": "trg_HLT_PFHT700_PFMET85_PFMHT85_IDTight",
+                            "hlt_path": "HLT_PFHT700_PFMET85_PFMHT85_IDTight",
+                            "ptcut": 50,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 3,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                        {
+                            "flagname": "trg_HLT_PFHT500_PFMET100_PFMHT100_IDTight",
+                            "hlt_path": "HLT_PFHT500_PFMET100_PFMHT100_IDTight",
+                            "ptcut": 50,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 3,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                        {
+                            "flagname": "trg_HLT_PFHT800_PFMET75_PFMHT75_IDTight",
+                            "hlt_path": "HLT_PFHT800_PFMET75_PFMHT75_IDTight",
+                            "ptcut": 50,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 3,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                        {
+                            "flagname": "trg_HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                            "hlt_path": "HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                            "ptcut": 250,
+                            "etacut": 2.5,
+                            "filterbit": 3,
+                            "trigger_particle_id": 6,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_AK8PFJet420_MassSD30",
+                            "hlt_path": "HLT_AK8PFJet420_MassSD30",
+                            "ptcut": 420,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 6,
+                            "max_deltaR_triggermatch": 0.8,
+                        },
+                        {
+                            "flagname": "trg_HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1",
+                            "hlt_path": "HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1",
+                            "ptcut": 180,
+                            "etacut": 2.5,
+                            "filterbit": 3,
+                            "trigger_particle_id": 15,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                        {
+                            "flagname": "trg_HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
+                            "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
+                            "ptcut": 35,
+                            "etacut": 2.5,
+                            "filterbit": 7,
+                            "trigger_particle_id": 15,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
+                        {
+                            "flagname": "trg_HLT_PFMET120_PFMHT120_IDTight",
+                            "hlt_path": "HLT_PFMET120_PFMHT120_IDTight",
+                            "ptcut": 120,
+                            "etacut": 2.5,
+                            "filterbit": -1,
+                            "trigger_particle_id": 2,
+                            "max_deltaR_triggermatch": 0.4,
+                        },
                     ]
                 }
             )
@@ -239,6 +406,9 @@ def build_config(
     configuration.add_producers(
         ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
         [
+
+            jets.JetEnergyCorrection, 
+            jets.Jet_Veto_forbbtt,
 
             FatJets.GoodFatJets,
             FatJets.NumberOfGoodFatJets,   
@@ -263,6 +433,12 @@ def build_config(
 
             FatJets.LVFatJet0,
             FatJets.LVFatJet1,
+
+            FatJets.LV_HH,
+            p4.HH_pt,
+            p4.HH_eta,
+            p4.HH_phi,
+            p4.HH_mass,
 
             p4.tt_fatjet_pt,
             p4.tt_fatjet_eta,
@@ -292,9 +468,16 @@ def build_config(
             FatJets.FatJet0_9X_tt,
             FatJets.FatJet1_9X_bb,
 
+            FatJets.FatJetPNetCorr0,
+            FatJets.FatJetPNetCorr1,
+
             FatJets.FatJetdR,
             FatJets.FatJetdphi,
-            #triggers.HLTTriggerFlags_forfullyboosted,
+
+            FatJets.Mass_bb_PNetCorr,
+            FatJets.SDMass_bb_PNetCorr,
+            FatJets.Mass_tt_PNetCorr,
+            FatJets.SDMass_tt_PNetCorr,
         ]
     )
 
@@ -303,7 +486,7 @@ def build_config(
         [
             triggers.HLTTriggerFlags_forfullyboosted,
         ]
-    )##woeking 5261219
+    )##working 5261219
 
 
     configuration.add_producers(
@@ -340,9 +523,13 @@ def build_config(
             boostedtau_boostedbbtt.SFMass1,
 
             boostedtau_boostedbbtt.Nu_tau_x12,
-
             FatJets.Mass_CA,
             FatJets.Mass_CA_SF,
+
+            boostedtau_boostedbbtt.Nu_tau_x12_Trans,
+            FatJets.Mass_CA_Trans,
+            FatJets.Mass_CA_SF_Trans,
+
         ]
         
     )
@@ -361,9 +548,13 @@ def build_config(
             subjet_boostedbbtt.SFMass0,
             subjet_boostedbbtt.SFMass1,
 
-            subjet_boostedbbtt.Nu_tau_x12,
+            boostedtau_boostedbbtt.Nu_tau_x12,
             FatJets.Mass_CA,
             FatJets.Mass_CA_SF,
+
+            boostedtau_boostedbbtt.Nu_tau_x12_Trans,
+            FatJets.Mass_CA_Trans,
+            FatJets.Mass_CA_SF_Trans,
         ]
         
     )
@@ -388,6 +579,10 @@ def build_config(
             FatJets.Fake_x12,
             FatJets.Mass_CA_FatJet,#需要改写
             FatJets.Mass_CA_FatJet_SF,
+
+            FatJets.Fake_x12_Trans,
+            FatJets.Mass_CA_FatJet_Trans,
+            FatJets.Mass_CA_FatJet_SF_Trans,
             # subjet_boostedbbtt.Nu_tau_x12,
             # FatJets.Mass_CA,
             # FatJets.Mass_CA_SF,
@@ -407,6 +602,24 @@ def build_config(
             p4.BoostedTau_1_phi,
             p4.BoostedTau_1_mass,
         ]
+    )
+
+    configuration.add_producers(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        [
+            FatJets.SDMass_CATrans_tt_PNetCorr,
+            FatJets.Mass_CATrans_tt_PNetCorr,
+            FatJets.SDMass_CAFake_tt_PNetCorr,
+            FatJets.Mass_CAFake_tt_PNetCorr,
+        ]
+    )
+
+    configuration.add_modification_rule(
+        ["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+        ReplaceProducer(
+            producers=[jets.JetEnergyCorrection, jets.JetEnergyCorrection_data],
+            samples="data",
+        ),
     )
 
     configuration.add_outputs(
@@ -434,8 +647,22 @@ def build_config(
             nanoAOD.HLT_PFHT700_PFMET85_PFMHT85_IDTight,
             nanoAOD.HLT_PFHT800_PFMET75_PFMHT75_IDTight,
 
+            #need adding nana,
+            nanoAOD.HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35,
+            nanoAOD.HLT_AK8PFJet420_MassSD30,
+            nanoAOD.HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1,
+            nanoAOD.HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1,
+            nanoAOD.HLT_PFMET120_PFMHT120_IDTight,
+
+
         ],
     )
+    # add genWeight for everything but data
+    if sample != "data":
+        configuration.add_outputs(
+            "global",
+            nanoAOD.genWeight,
+        )
 
     # configuration.add_outputs(
     #     ["notwofatjet"],
@@ -483,6 +710,14 @@ def build_config(
             q.FatJet0_9X_xtt,
             q.FatJet1_9X_xbb,
 
+            q.FatJet_bb_PNetCorr,
+            q.FatJet_tt_PNetCorr,
+
+            q.SDMass_bb_PNetCorr,
+            q.Mass_bb_PNetCorr,
+            q.SDMass_tautau_PNetCorr,
+            q.Mass_tautau_PNetCorr,
+
             q.dR_Fatjet,
             q.dphi_Fatjet,
 
@@ -510,8 +745,11 @@ def build_config(
             q.BoostedTau0_SFMass_1,
 
             q.x0x1,
+            q.x0x1_trans,
             q.tautau_SFMAss_CA,
             q.tautau_MAss_CA,
+            q.tautau_MAss_CA_trans,
+            q.tautau_SFMAss_CA_trans,
 
             q.MatchedSubinfo,
 
@@ -532,8 +770,23 @@ def build_config(
             q.tau_eta_1,
             q.tau_phi_1,
             q.tau_mass_1,
+
+            q.HH_p4,
+            q.HH_pt_1,
+            q.HH_eta_1,
+            q.HH_phi_1,
+            q.HH_mass_1,
+
             triggers.HLTTriggerFlags_forfullyboosted.output_group,
             
+            q.Jet_pt_corrected,
+            q.Jet_mass_corrected,
+            q.Jet_Veto_flag,
+
+            q.SDMass_CATrans_tautau_PNetCorr,
+            q.Mass_CATrans_tautau_PNetCorr,
+            q.SDMass_CAFake_tautau_PNetCorr,
+            q.Mass_CAFake_tautau_PNetCorr,
         ],
     )
 

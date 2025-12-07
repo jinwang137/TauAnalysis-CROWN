@@ -21,7 +21,7 @@ JetPtCorrection = Producer(
         nanoAOD.rho,
     ],
     output=[q.Jet_pt_corrected],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 JetPtCorrection_data = Producer(
     name="JetPtCorrection_data",
@@ -32,11 +32,23 @@ JetPtCorrection_data = Producer(
         nanoAOD.Jet_phi,
         nanoAOD.Jet_area,
         nanoAOD.Jet_rawFactor,
+        nanoAOD.Jet_ID,
         nanoAOD.rho,
     ],
     output=[q.Jet_pt_corrected],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
+
+Jet_Veto_forbbtt = Producer(
+    name="Jet_Veto_forbbtt",
+    call="quantities::jet::CutVarValid({df}, {input}, {output} )",
+    input=[
+        q.Jet_pt_corrected,
+    ],
+    output=[q.Jet_Veto_flag],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+)
+
 JetMassCorrection = Producer(
     name="JetMassCorrection",
     call="physicsobject::ObjectMassCorrectionWithPt({df}, {output}, {input})",
@@ -46,7 +58,7 @@ JetMassCorrection = Producer(
         q.Jet_pt_corrected,
     ],
     output=[q.Jet_mass_corrected],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 # in data and embdedded sample, we simply rename the nanoAOD jets to the jet_pt_corrected column
 RenameJetPt = Producer(
@@ -54,21 +66,21 @@ RenameJetPt = Producer(
     call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
     input=[nanoAOD.Jet_pt],
     output=[q.Jet_pt_corrected],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 RenameJetMass = Producer(
     name="RenameJetMass",
     call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
     input=[nanoAOD.Jet_mass],
     output=[q.Jet_mass_corrected],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 RenameJetsData = ProducerGroup(
     name="RenameJetsData",
     call=None,
     input=None,
     output=None,
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[RenameJetPt, RenameJetMass],
 )
 JetEnergyCorrection = ProducerGroup(
@@ -76,15 +88,15 @@ JetEnergyCorrection = ProducerGroup(
     call=None,
     input=None,
     output=None,
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[JetPtCorrection, JetMassCorrection],
 )
 JetEnergyCorrection_data = ProducerGroup(
-    name="JetEnergyCorrection",
+    name="JetEnergyCorrection_data",
     call=None,
     input=None,
     output=None,
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[JetPtCorrection_data, JetMassCorrection],
 )
 JetPtCut = Producer(
@@ -92,56 +104,56 @@ JetPtCut = Producer(
     call="physicsobject::CutPt({df}, {input}, {output}, {min_jet_pt})",
     input=[q.Jet_pt_corrected],
     output=[],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 BJetPtCut = Producer(
     name="BJetPtCut",
     call="physicsobject::CutPt({df}, {input}, {output}, {min_bjet_pt})",
     input=[q.Jet_pt_corrected],
     output=[],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 JetEtaCut = Producer(
     name="JetEtaCut",
     call="physicsobject::CutEta({df}, {input}, {output}, {max_jet_eta})",
     input=[nanoAOD.Jet_eta],
     output=[],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 BJetEtaCut = Producer(
     name="BJetEtaCut",
     call="physicsobject::CutEta({df}, {input}, {output}, {max_bjet_eta})",
     input=[nanoAOD.Jet_eta],
     output=[],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 JetIDCut = Producer(
     name="JetIDCut",
     call="physicsobject::jet::CutUChar_tID({df}, {output}, {input}, {jet_id})",
     input=[nanoAOD.Jet_ID],
     output=[q.jet_id_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 JetPUIDCut = Producer(
     name="JetPUIDCut",
     call="physicsobject::jet::CutPUID({df}, {output}, {input}, {jet_puid}, {jet_puid_max_pt})",
     input=[nanoAOD.Jet_PUID, q.Jet_pt_corrected],
     output=[q.jet_puid_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 BTagCut = Producer(
     name="BTagCut",
     call="physicsobject::jet::CutRawID({df}, {input}, {output}, {btag_cut})",
     input=[nanoAOD.BJet_discriminator],
     output=[],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 GoodJets = ProducerGroup(
     name="GoodJets",
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[],
     output=[q.good_jets_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[JetPtCut, JetEtaCut, JetIDCut, JetPUIDCut],
 )
 
@@ -151,7 +163,7 @@ GoodJets_2022 = ProducerGroup(
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[],
     output=[q.good_jets_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[JetPtCut, JetEtaCut, JetIDCut],
 )
 
@@ -160,7 +172,7 @@ PreBJetEtaCut = Producer(
     call="physicsobject::CutEta({df}, {input}, {output}, {max_bjet_eta})",
     input=[nanoAOD.Jet_eta],
     output=[],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 
 PreBJetPtCut = Producer(
@@ -168,14 +180,14 @@ PreBJetPtCut = Producer(
     call="physicsobject::CutPt({df}, {input}, {output}, {min_bjet_pt})",
     input=[q.Jet_pt_corrected],
     output=[],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 GoodBJets = ProducerGroup(
     name="GoodBJets",
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[q.jet_id_mask, q.jet_puid_mask],
     output=[q.good_bjets_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[BJetPtCut, BJetEtaCut, BTagCut],
 )
 
@@ -185,7 +197,7 @@ GoodBJets_2022 = ProducerGroup(
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[q.jet_id_mask, ],
     output=[q.good_bjets_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[BJetPtCut, BJetEtaCut, BTagCut],
 )
 
@@ -194,7 +206,7 @@ GoodPreBJets = ProducerGroup(
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[q.jet_id_mask, q.jet_puid_mask],
     output=[q.good_prebjet_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[PreBJetPtCut, PreBJetEtaCut],
 )
 
@@ -204,7 +216,7 @@ GoodPreBJets_2022 = ProducerGroup(
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[q.jet_id_mask,],
     output=[q.good_prebjet_mask],
-    scopes=["global"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
     subproducers=[PreBJetPtCut, PreBJetEtaCut],
 )
 

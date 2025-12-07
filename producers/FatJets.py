@@ -142,6 +142,39 @@ FatJetdphi = Producer(
     scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 
+LV_HH = Producer(
+    name="LV_HH",
+    call="quantities::boostedbbtt::p4_sum({df}, {output}, {input})",
+    input=[
+        q.fatjet_p4_0, 
+        q.fatjet_p4_1,
+        ],
+    output=[q.HH_p4],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+)
+
+FatJetPNetCorr0 = Producer(
+    name="FatJetPNetCorr0",
+    call="lorentzvectors::buildSFMass({df}, {input_vec}, 0, {output})",
+    input=[
+        q.good_Xbbtt_fatjet_collection,
+        nanoAOD.FatJet_particleNet_massCorr,
+    ],
+    output=[q.FatJet_tt_PNetCorr],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"]
+)
+
+FatJetPNetCorr1 = Producer(
+    name="FatJetPNetCorr1",
+    call="lorentzvectors::buildSFMass({df}, {input_vec}, 1, {output})",
+    input=[
+        q.good_Xbbtt_fatjet_collection,
+        nanoAOD.FatJet_particleNet_massCorr,
+    ],
+    output=[q.FatJet_bb_PNetCorr],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"]
+)
+
 FatJetSFMass0 = Producer(
     name="FatJetSFMass0",
     call="lorentzvectors::buildSFMass({df}, {input_vec}, 0, {output})",
@@ -185,6 +218,8 @@ FatJetMass1 = Producer(
     output=[q.FatJet_bb_Mass_1],
     scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"]
 )
+
+
 
 FatJet0_PNet_xtt_vs_QCD = Producer(
     name="FatJet0_PNet_xtt_vs_QCD",
@@ -354,6 +389,14 @@ Fake_x12 = Producer(
     scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 
+Fake_x12_Trans = Producer(
+    name="Fake_x12_Trans",
+    call="lorentzvectors::buildSafe999({df}, {output})",
+    input=[],
+    output=[q.x0x1_trans],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+)
+
 Mass_CA = Producer(
     name="Mass_CA",
     call="quantities::boostedbbtt::CA_ttMAss({df}, {input}, {output})",
@@ -365,6 +408,17 @@ Mass_CA = Producer(
     scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )
 
+Mass_CA_Trans = Producer(
+    name="Mass_CA_Trans",
+    call="quantities::boostedbbtt::CA_ttMAss({df}, {input}, {output})",
+    input=[
+        q.x0x1_trans,
+        q.FatJet_tt_Mass_0,
+    ],
+    output=[q.tautau_MAss_CA_trans],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+)
+
 Mass_CA_SF = Producer(
     name="Mass_CA_SF",
     call="quantities::boostedbbtt::CA_ttMAss({df}, {input}, {output})",
@@ -373,6 +427,17 @@ Mass_CA_SF = Producer(
         q.FatJet_tt_SFMass_0,
     ],
     output=[q.tautau_SFMAss_CA],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+Mass_CA_SF_Trans = Producer(
+    name="Mass_CA_SF_Trans",
+    call="quantities::boostedbbtt::CA_ttMAss({df}, {input}, {output})",
+    input=[
+        q.x0x1_trans,
+        q.FatJet_tt_SFMass_0,
+    ],
+    output=[q.tautau_SFMAss_CA_trans],
     scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
 )
 
@@ -398,4 +463,117 @@ Mass_CA_FatJet_SF = Producer(
     ],
     output=[q.tautau_SFMAss_CA],
     scopes=["boostedbb_boostedtt_fatjet"],
+)
+
+Mass_CA_FatJet_Trans = Producer(
+    name="Mass_CA_FatJet_Trans",
+    call="quantities::boostedbbtt::CA_ttMAss_fatjet({df}, {input}, {output})",
+    input=[
+        q.fatjet_p4_0,
+        nanoAOD.PFMET_pt,
+        nanoAOD.PFMET_phi,
+    ],
+    output=[q.tautau_MAss_CA_trans],
+    scopes=["boostedbb_boostedtt_fatjet"],
+)
+
+Mass_CA_FatJet_SF_Trans = Producer(
+    name="Mass_CA_FatJet_SF_Trans",
+    call="quantities::boostedbbtt::CA_ttMAss_fatjet({df}, {input}, {output})",
+    input=[
+        q.fatjet_p4_0,
+        nanoAOD.PFMET_pt,
+        nanoAOD.PFMET_phi,
+    ],
+    output=[q.tautau_SFMAss_CA_trans],
+    scopes=["boostedbb_boostedtt_fatjet"],
+)
+
+#mass with corr
+SDMass_CATrans_tt_PNetCorr = Producer(
+    name="SDMass_CATrans_tt_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_tt_PNetCorr,
+        q.tautau_SFMAss_CA_trans,
+    ],
+    output=[q.SDMass_CATrans_tautau_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+Mass_CATrans_tt_PNetCorr = Producer(
+    name="SDMass_CATrans_tt_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_tt_PNetCorr,
+        q.tautau_MAss_CA_trans,
+    ],
+    output=[q.Mass_CATrans_tautau_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+SDMass_CAFake_tt_PNetCorr = Producer(
+    name="SDMass_CAFake_tt_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_tt_PNetCorr,
+        q.tautau_SFMAss_CA,
+    ],
+    output=[q.SDMass_CAFake_tautau_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+Mass_CAFake_tt_PNetCorr = Producer(
+    name="Mass_CAFake_tt_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_tt_PNetCorr,
+        q.tautau_MAss_CA,
+    ],
+    output=[q.Mass_CAFake_tautau_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+SDMass_tt_PNetCorr = Producer(
+    name="SDMass_tt_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_tt_PNetCorr,
+        q.FatJet_tt_SFMass_0,
+    ],
+    output=[q.SDMass_tautau_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+Mass_tt_PNetCorr = Producer(
+    name="SDMass_tt_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_tt_PNetCorr,
+        q.FatJet_tt_Mass_0,
+    ],
+    output=[q.Mass_tautau_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+SDMass_bb_PNetCorr = Producer(
+    name="SDMass_bb_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_bb_PNetCorr,
+        q.FatJet_bb_SFMass_1,
+    ],
+    output=[q.SDMass_bb_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
+)
+
+Mass_bb_PNetCorr = Producer(
+    name="SDMass_bb_PNetCorr",
+    call="quantities::boostedbbtt::Mass_corr({df}, {input}, {output})",
+    input=[
+        q.FatJet_bb_PNetCorr,
+        q.FatJet_bb_Mass_1,
+    ],
+    output=[q.Mass_bb_PNetCorr],
+    scopes=["boostedbb_boostedtt", "boostedbb_boostedtt_subjet" , "boostedbb_boostedtt_fatjet"],
 )

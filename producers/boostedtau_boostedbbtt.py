@@ -150,5 +150,19 @@ Nu_tau_x12 = Producer(
         nanoAOD.PFMET_phi,
     ],
     output=[q.x0x1],
-    scopes=["boostedbb_boostedtt"],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+)
+
+#needchange
+Nu_tau_x12_Trans = Producer(
+    name="Nu_tau_x12_Trans",
+    call="quantities::boostedbbtt::Mass_CA_Trans({df}, {input}, {output})",
+    input=[
+        q.BoostedTau0_p4_0,
+        q.BoostedTau0_p4_1,
+        nanoAOD.PFMET_pt,
+        nanoAOD.PFMET_phi,
+    ],
+    output=[q.x0x1_trans],
+    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
 )

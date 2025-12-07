@@ -368,6 +368,9 @@ FatJet1_9X_xbb = Quantity("FatJet1_9X_xbb")
 FatJet0_9X_xttvsQCD = Quantity("FatJet0_9X_xttvsQCD")
 FatJet1_9X_xbbvsQCD = Quantity("FatJet1_9X_xbbvsQCD")
 
+FatJet_tt_PNetCorr = Quantity("FatJet_tt_PNetCorr")
+FatJet_bb_PNetCorr = Quantity("FatJet_bb_PNetCorr")
+
 
 base_BoostedTau_mask = Quantity("base_BoostedTau_mask")
 base_BoostedTau_collection = Quantity("base_BoostedTau_collection")
@@ -386,9 +389,12 @@ BoostedTau0_SFMass_0 = Quantity("BoostedTau0_SFMass_0")
 BoostedTau0_SFMass_1 = Quantity("BoostedTau0_SFMass_1")
 
 x0x1 = Quantity("x0x1")
+x0x1_trans = Quantity("x0x1_trans")
 
 tautau_SFMAss_CA = Quantity("tautau_SFMAss_CA")
 tautau_MAss_CA = Quantity("tautau_MAss_CA")
+tautau_MAss_CA_trans = Quantity("tautau_MAss_CA_trans")
+tautau_SFMAss_CA_trans = Quantity("tautau_SFMAss_CA_trans")
 
 SubJet0_ifcannotfoundbydR = Quantity("SubJet0_ifcannotfoundbydR")
 SubJet1_ifcannotfoundbydR = Quantity("SubJet1_ifcannotfoundbydR")
@@ -409,6 +415,8 @@ fatjet_eta_bb = Quantity("fatjet_eta_bb")
 fatjet_phi_bb = Quantity("fatjet_phi_bb")
 fatjet_mass_bb = Quantity("fatjet_mass_bb")
 
+
+
 tau_pt_0 = Quantity("tau_pt_0")
 tau_eta_0 = Quantity("tau_eta_0")
 tau_phi_0 = Quantity("tau_phi_0")
@@ -419,3 +427,20 @@ tau_phi_1 = Quantity("tau_phi_1")
 tau_mass_1 = Quantity("tau_mass_1")
 
 triggersss = Quantity("triggersss")
+
+HH_p4 = Quantity("HH_p4")
+HH_pt_1 = Quantity("HH_pt_1")
+HH_eta_1 = Quantity("HH_eta_1")
+HH_phi_1 = Quantity("HH_phi_1")
+HH_mass_1 = Quantity("HH_mass_1")
+
+Jet_Veto_flag = Quantity("Jet_Veto_flag")
+
+SDMass_CATrans_tautau_PNetCorr = Quantity("SDMass_CATrans_tautau_PNetCorr")
+Mass_CATrans_tautau_PNetCorr = Quantity("Mass_CATrans_tautau_PNetCorr")
+SDMass_CAFake_tautau_PNetCorr = Quantity("SDMass_CAFake_tautau_PNetCorr")
+Mass_CAFake_tautau_PNetCorr = Quantity("Mass_CAFake_tautau_PNetCorr")
+SDMass_tautau_PNetCorr = Quantity("SDMass_tautau_PNetCorr")
+Mass_tautau_PNetCorr = Quantity("Mass_tautau_PNetCorr")
+SDMass_bb_PNetCorr = Quantity("SDMass_bb_PNetCorr")
+Mass_bb_PNetCorr = Quantity("Mass_bb_PNetCorr")

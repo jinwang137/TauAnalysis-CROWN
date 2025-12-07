@@ -140,18 +140,18 @@ SFMass1 = Producer(
     scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"]
 )
 
-Nu_tau_x12 = Producer(
-    name="Nu_tau_x12",
-    call="quantities::boostedbbtt::Mass_CA({df}, {input}, {output})",
-    input=[
-        q.BoostedTau0_p4_0,
-        q.BoostedTau0_p4_1,
-        nanoAOD.PFMET_pt,
-        nanoAOD.PFMET_phi,
-    ],
-    output=[q.x0x1],
-    scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
-)
+# Nu_tau_x12 = Producer(
+#     name="Nu_tau_x12",
+#     call="quantities::boostedbbtt::Mass_CA({df}, {input}, {output})",
+#     input=[
+#         q.BoostedTau0_p4_0,
+#         q.BoostedTau0_p4_1,
+#         nanoAOD.PFMET_pt,
+#         nanoAOD.PFMET_phi,
+#     ],
+#     output=[q.x0x1],
+#     scopes=["boostedbb_boostedtt",  "boostedbb_boostedtt_subjet", "boostedbb_boostedtt_fatjet"],
+# )
 
 
 
